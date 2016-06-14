@@ -2,6 +2,9 @@
 
 from carPayment import getMonthlyPayment
 
+def getTotalMoneyPaid(P, r, t):
+    return t * getMonthlyPayment(P, r, t) 
+
 def getInterestRate(P, t, A, tolerance=0.0009765625):
     r1 = 0.0001
     r2 = 100.0
@@ -22,12 +25,6 @@ def getInterestRate(P, t, A, tolerance=0.0009765625):
     return r3
 
 def getLoanTerm(P, r, A, maxTime=2400, tolerance=0.0009765625):
-    #If your monthly payment is less than the amount
-    #of interest your loan will accrue, then you will be
-    #in debt forever.
-    if (P - A) * (r / 100) >= A:
-        return float("inf")
-
     f = carPaymentRooted
     previous = None
     current = None
@@ -64,53 +61,70 @@ def main():
     A = 100
     t = 60
 
-    r = getInterestRate(P, t, A)
+    r = getInterestRate(P, t, A) * 12
     print("r (estimated): {0}".format(r))
-    print("A (estimated): {0}".format(getMonthlyPayment(P, r, t)))
+    print("A (estimated): {0}".format(getMonthlyPayment(P, r / 12.0, t)))
     print("A (exact): {0}".format(A))
 
     P = 3000
     A = 66
     r = 18
 
-    t = getLoanTerm(P, r, A)
+    t = getLoanTerm(P, r / 12.0, A)
     print("t (estimated): {0}".format(t))
-    print("A (estimated): {0}".format(getMonthlyPayment(P, r, t)))
+    print("A (estimated): {0}".format(getMonthlyPayment(P, r / 12.0, t)))
     print("A (exact): {0}".format(A))
 
-    t = getLoanTerm(P, r, 66, 0.1)
+    t = getLoanTerm(P, r / 12.0, 66, 0.1)
     print("t (for only paying the minimum payment): {0}".format(t))
-    t = getLoanTerm(P, r, 66, 0.01)
+    t = getLoanTerm(P, r / 12.0, 66, 0.01)
     print("t (for only paying the minimum payment): {0}".format(t))
-    t = getLoanTerm(P, r, 66, 0.001)
+    t = getLoanTerm(P, r / 12.0, 66, 0.001)
     print("t (for only paying the minimum payment): {0}".format(t))
-    t = getLoanTerm(P, r, 66, 0.0001)
+    t = getLoanTerm(P, r / 12.0, 66, 0.0001)
     print("t (for only paying the minimum payment): {0}".format(t))
-    t = getLoanTerm(P, r, 50, 0.1)
+    t = getLoanTerm(P, r / 12.0, 50, 0.1)
     print("t (for only paying the minimum payment): {0}".format(t))
-    t = getLoanTerm(P, r, 50, 0.01)
+    t = getLoanTerm(P, r / 12.0, 50, 0.01)
     print("t (for only paying the minimum payment): {0}".format(t))
-    t = getLoanTerm(P, r, 50, 0.001)
+    t = getLoanTerm(P, r / 12.0, 50, 0.001)
     print("t (for only paying the minimum payment): {0}".format(t))
-    t = getLoanTerm(P, r, 50, 0.0001)
+    t = getLoanTerm(P, r / 12.0, 50, 0.0001)
     print("t (for only paying the minimum payment): {0}".format(t))
-    t = getLoanTerm(P, r, 10, 0.1)
+    t = getLoanTerm(P, r / 12.0, 10, 0.1)
     print("t (for only paying the minimum payment): {0}".format(t))
-    t = getLoanTerm(P, r, 10, 0.01)
+    t = getLoanTerm(P, r / 12.0, 10, 0.01)
     print("t (for only paying the minimum payment): {0}".format(t))
-    t = getLoanTerm(P, r, 10, 0.001)
+    t = getLoanTerm(P, r / 12.0, 10, 0.001)
     print("t (for only paying the minimum payment): {0}".format(t))
-    t = getLoanTerm(P, r, 10, 0.0001)
+    t = getLoanTerm(P, r / 12.0, 10, 0.0001)
     print("t (for only paying the minimum payment): {0}".format(t))
 
-    t = getLoanTerm(P, 0, 10, 0.0001)
+    t = getLoanTerm(P, 10 / 12.0, 0)
     print("screwTest1: {0}".format(t))
-    t = getLoanTerm(P, 10, 0, 0.0001)
+    t = getLoanTerm(P, 10 / 12.0, 0)
     print("screwTest2: {0}".format(t))
-    t = getLoanTerm(P, 0, 0, 0.0001)
+    t = getLoanTerm(P, 0 / 12.0, 0) #TODO: Fix this!
     print("screwTest3: {0}".format(t))
-    t = getLoanTerm(0, 10, 0, 0.0001)
+    t = getLoanTerm(0, 11 / 12.0, 0) #TODO: Fix this!
     print("screwTest4: {0}".format(t))
+
+    P = 15000.0
+    r = 9.0
+    t = 60.0
+
+    M = getTotalMoneyPaid(P, r / 12.0, t)
+
+    print("Total cost of financing a ${0} vehicle at {1}% APR for {2} months is ${3}".format(P, r, t, M))
+
+    print("Total cost of 15-year mortgage: ${0}".format(getTotalMoneyPaid(140000, 7.0 / 12.0, 15 * 12.0)))
+    print("Total cost of 30-year mortgage: ${0}".format(getTotalMoneyPaid(140000, 7.0 / 12.0, 30 * 12.0)))
+
+    print("The $16000 offer will cost ${0} total".format(getTotalMoneyPaid(16000, 5.0 / 12.0, 12.0 * 4.0)))
+    print("The $15000 offer will cost ${0} total".format(getTotalMoneyPaid(15000, 5.5 / 12.0, 12.0 * 4.0)))
+
+    print("The $2400 offer will cost ${0} total".format(getTotalMoneyPaid(2400, 15.0 / 12.0, 12.0 * 3.0)))
+    print("The $2995 offer will cost ${0} total".format(getTotalMoneyPaid(2995, 0.0 / 12.0, 12.0 * 3.0)))
 
 if __name__ == "__main__":
     main()

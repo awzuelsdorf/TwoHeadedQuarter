@@ -126,5 +126,16 @@ def main():
     print("The $2400 offer will cost ${0} total".format(getTotalMoneyPaid(2400, 15.0 / 12.0, 12.0 * 3.0)))
     print("The $2995 offer will cost ${0} total".format(getTotalMoneyPaid(2995, 0.0 / 12.0, 12.0 * 3.0)))
 
+    P = 1500
+    t = 36
+    A = 50
+
+    r = getInterestRate(P, t, A) * 12
+    print("The effective interest rate for financing a ${0} computer with payments of ${1} for {2} months is {3}%".format(P, A, t, r))
+
+    print("Loan term (estimated): {0} months".format(getLoanTerm(P, r / 12.0, A)))
+    print("Monthly payment (estimated): ${0}".format(getMonthlyPayment(P, r / 12.0, t)))
+    print("Total cost (estimated): ${0}".format(getTotalMoneyPaid(P, r / 12.0, t)))
+
 if __name__ == "__main__":
     main()

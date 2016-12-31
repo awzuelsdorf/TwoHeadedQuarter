@@ -26,8 +26,7 @@ def getCarPrice(A, r, t):
     if A < 0 or r < 0 or t < 0:
         raise ValueError("Invalid parameters: A = {0}, r = {1}, t = {2}. All parameters must be at least zero.".format(A, r, t))
     elif r == 0: #TODO: Figure out a better way to
-        #determine whether r is zero.
-        raise BaseException("Not implemented yet!")
+        return A
     else:
         return A * (((1 + r / 100) ** t) - 1) / (r / 100 * ((1 + r / 100) ** t))
 
